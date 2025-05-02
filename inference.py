@@ -35,9 +35,8 @@ def enhance_ultrasound(image_path):
     
     return enhanced, quality
 
-def main():
+def main(test_image):
     try:
-        test_image = "test.png"
         enhanced_img, quality_report = enhance_ultrasound(test_image)
       
         output_path = "enhanced.png"
@@ -49,6 +48,21 @@ def main():
         print("Оценка изображения:")
         for metric, value in quality_dict.items():
             print(f"{metric}: {value:.4f}")
+
+        print("Метрики для улучшенного изображения:")
+        res_image = cv2.imread("enhanced.png", cv2.IMREAD_GRAYSCALE)
+        image_tensor = torch.tensor(res_image, dtype=torch.float32).unsqueeze(0).unsqueeze(0) / 255.0
+        image_tensor = image_tensor.to(device)
+    
+        with torch.no_grad():
+            changed_quality = vit(image_tensor)
+            changed_quality_dict = {k: v.item() for k, v in zip(quality_metrics, changed_quality.squeeze())}
+            for metric, value in changed_quality_dict.items():
+                print(f"{metric}: {value:.4f}")
+
             
     except Exception as e:
         print(str(e))
+
+
+main("test.png")

@@ -8,8 +8,13 @@ class ViTQualityAssessor(nn.Module):
         super().__init__()
         patch_size = Config.VIT_PATCH_SIZE
         self.patch_embed = nn.Conv2d(1, Config.VIT_DIM, kernel_size=patch_size, stride=patch_size)
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=Config.VIT_DIM,
+            nhead=4,
+            batch_first=True  
+        )
         self.transformer = nn.TransformerEncoder(
-            nn.TransformerEncoderLayer(d_model=Config.VIT_DIM, nhead=4),
+            encoder_layer,
             num_layers=Config.VIT_DEPTH
         )
         self.head = nn.Sequential(

@@ -1,8 +1,7 @@
 import torch
 
 class Config:
-    # Данные
-    IMAGE_SIZE = 256
+    IMAGE_SIZE = 256  # Make sure this matches the size used during training
     BATCH_SIZE = 8
     
     # ViT
